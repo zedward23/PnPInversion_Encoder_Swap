@@ -4,6 +4,7 @@ from models.p2p.inversion import NegativePromptInversion, NullInversion, DirectI
 from models.p2p.attention_control import EmptyControl, AttentionStore, make_controller
 from models.p2p.p2p_guidance_forward import p2p_guidance_forward, direct_inversion_p2p_guidance_forward, direct_inversion_p2p_guidance_forward_add_target,p2p_guidance_forward_single_branch
 from models.p2p.proximal_guidance_forward import proximal_guidance_forward
+from models.openclip import ClipGmPWrapper
 from diffusers import StableDiffusionPipeline
 from utils.utils import load_512, latent2image, txt_draw
 from PIL import Image
@@ -23,6 +24,9 @@ class P2PEditor:
         self.ldm_stable = StableDiffusionPipeline.from_pretrained(
             "CompVis/stable-diffusion-v1-4", scheduler=self.scheduler).to(device)
         self.ldm_stable.scheduler.set_timesteps(self.num_ddim_steps)
+        clipgm = ClipGmPWrapper(device)
+        self.ldm_stable.tokenizer = clipgm.tokenizer
+        self.ldm_stable.text_encoder = clipgm.text_encoder
 
         
     def __call__(self, 

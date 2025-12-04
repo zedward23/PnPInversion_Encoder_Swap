@@ -104,12 +104,42 @@ class LocalBlend:
         mask = mask.gt(self.th[1-int(use_pool)])
         mask = mask[:1] + mask
         return mask
+    def _get_cross_maps(self, attention_store):
+        # Try the original keys first (older P2P code paths)
+        down = attention_store.get("down_cross")
+        up   = attention_store.get("up_cross")
+
+        # Fall back to alternative names used in some diffusers versions
+        if down is None:
+            down = attention_store.get("down_block_cross")
+        if up is None:
+            up = attention_store.get("up_block_cross")
+
+        # Final fallback: some stores keep a generic "cross" list; if so, just use that
+        if down is None and "cross" in attention_store:
+            down = attention_store["cross"]
+        if up is None and "cross" in attention_store:
+            up = attention_store["cross"]
+
+        # Normalize to lists (avoid None)
+        down = down or []
+        up   = up or []
+
+        # Keep the same slicing behavior as original code
+        return down[2:4] + up[:3]
     
     def __call__(self, x_t, attention_store):
         self.counter += 1
         if self.counter > self.start_blend:
 
-            maps = attention_store["down_cross"][2:4] + attention_store["up_cross"][:3]
+            maps = self._get_cross_maps(attention_store)
+            # Filter out any None entries (sometimes hooks append Nones)
+            maps = [m for m in maps if m is not None and isinstance(m, torch.Tensor)]
+            
+            if len(maps) == 0:
+                # No attention maps were collected, so skip blending
+                return x_t
+
             maps = [item.reshape(self.alpha_layers.shape[0], -1, 1, 16, 16, MAX_NUM_WORDS) for item in maps]
             maps = torch.cat(maps, dim=1)
             mask = self.get_mask(maps, self.alpha_layers, True)

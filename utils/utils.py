@@ -134,6 +134,8 @@ def get_time_words_attention_alpha(prompts, num_steps,
     alpha_time_words = alpha_time_words.reshape(num_steps + 1, len(prompts) - 1, 1, 1, max_num_words)
     return alpha_time_words
 
+from PIL import Image
+
 def txt_draw(text,
                 target_size=[512,512]):
     plt.figure(dpi=300,figsize=(1,1))
@@ -147,7 +149,10 @@ def txt_draw(text,
     buf.shape = (w, h, 4)
     buf = np.roll(buf, 3, axis=2)
     image = Image.frombytes("RGBA", (w, h), buf.tostring())
-    image = image.resize(target_size,Image.ANTIALIAS)
+    
+
+    resample = getattr(Image, "Resampling", Image)
+    image = image.resize(target_size, resample.LANCZOS)
     image = np.asarray(image)[:,:,:3]
     
     plt.close('all')

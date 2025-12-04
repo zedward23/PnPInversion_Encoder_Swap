@@ -101,11 +101,13 @@ all_tgt_image_folders={
     # results of comparing inversion
     # ---
     "1_ddim+p2p":"output/ddim+p2p/annotation_images",
+    "1_null-text-inversion+p2p":"output/null-text-inversion+p2p/annotation_images",
     "1_null-text-inversion+p2p_a800":"output/null-text-inversion+p2p_a800/annotation_images",
     "1_null-text-inversion+p2p_3090":"output/null-text-inversion+p2p_3090/annotation_images",
     "1_negative-prompt-inversion+p2p":"output/negative-prompt-inversion+p2p/annotation_images",
     "1_stylediffusion+p2p":"output/stylediffusion+p2p/annotation_images",
     "1_directinversion+p2p":"output/directinversion+p2p/annotation_images",
+    "encoder_swap+p2p":"output/encoder_swap+p2p/annotation_images",
     # ---
     "1_ddim+masactrl":"output/ddim+masactrl/annotation_images",
     "1_directinversion+masactrl":"output/directinversion+masactrl/annotation_images",

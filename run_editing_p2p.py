@@ -82,10 +82,10 @@ image_save_paths={
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--rerun_exist_images', action= "store_true") # rerun existing images
-    parser.add_argument('--data_path', type=str, default="data") # the editing category that needed to run
+    parser.add_argument('--data_path', type=str, default="data/PIE-Bench_v1") # the editing category that needed to run
     parser.add_argument('--output_path', type=str, default="output") # the editing category that needed to run
     parser.add_argument('--edit_category_list', nargs = '+', type=str, default=["0","1","2","3","4","5","6","7","8","9"]) # the editing category that needed to run
-    parser.add_argument('--edit_method_list', nargs = '+', type=str, default=["ddim+p2p"]) # the editing methods that needed to run
+    parser.add_argument('--edit_method_list', nargs = '+', type=str, default=["ddim+p2p", "null-text-inversion+p2p", "negative-prompt-inversion+p2p"]) # the editing methods that needed to run
     args = parser.parse_args()
     
     rerun_exist_images=args.rerun_exist_images
